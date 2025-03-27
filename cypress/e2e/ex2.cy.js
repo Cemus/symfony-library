@@ -23,9 +23,11 @@ describe("Exercice 2", () => {
 
     const word = "azdazdazd";
 
+    cy.get("#category_label").clear();
+
     cy.get("#category_label").type(word);
     cy.get(".btn").contains("Update").click();
 
-    cy.get("title").should("have.text", "error 500");
+    cy.get("title").should("contain", "500 Internal Server Error");
   });
 });
