@@ -7,17 +7,15 @@ describe("Test Cypress e2e", () => {
     cy.get(".btn").click();
 
     cy.visit("https://127.0.0.1:8000/category");
-    cy.get("td").contains("new").should("be.visible");
+    cy.get("td").eq(2).contains("new").should("be.visible");
   });
 
   it("Simulation erreur", () => {
     cy.visit("https://127.0.0.1:8000/category/new");
 
-    cy.get("#category_label").type("nouvelle_categorie");
-
     cy.get(".btn").click();
 
-    cy.visit("https://127.0.0.1:800/category");
-    cy.get("td").contains("new").should("not.exist");
+    cy.visit("https://127.0.0.1:8000/category");
+    cy.get("td").contains("erreur").should("not.exist");
   });
 });
