@@ -5,32 +5,26 @@ on:
     branches: ["main"]
 
 jobs:
-  Petit-Message:
-    name: Test de nom
+  job:
+    name: Message lancé (validation du workflow)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Lance un message
-        run: echo Hello, world!
-
-  Installer-Php:
-    runs-on: ubuntu-latest
+        run: echo Workflow valide :) !
+        
+  job:
+    name: Machine php
+    uses: shivammathur/setup-php@v2
+    with:
+      php-version: '8.2.4'
+      extensions: intl, mbstring, sodium, pdo_mysql
+      tools: composer
     steps:
-      - name: Checkout GitCode
+      - name: Choppe le repo
         uses: actions/checkout@v4
-
-      - name: Run Cypress Test
-        uses: cypress-io/github-action@v4
-        with:
-          command: npm run test
-
-  Test-Cypress:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout GitCode
-        uses: actions/checkout@v4
-
-      - name: Run Cypress Test
-        uses: cypress-io/github-action@v4
-        with:
-          command: npm run test
+        run: composer i
+      - name: Installer les dépendances
+        run: npm i
+      - name: Run Cypress
+        run: npm run cypress:run
