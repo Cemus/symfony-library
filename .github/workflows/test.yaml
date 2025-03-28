@@ -13,7 +13,36 @@ jobs:
         run: |
           echo "Workflow valide :) !"
           exit 0
+  sql-server:
+    name: Crée le serveur mariadb
+    build:
+      runs-on: ubuntu-latest
+      services:
+        ghmariadb:
+          image: mariadb:10.9.2-jammy
+          ports:
+            - 3306
+          env:
+            MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
+            MYSQL_USER: ${{ secrets.DB_USER }}
+            MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+            MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+          options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
+      steps:
+        - uses: actions/checkout@v3
+        - name: Set up JDK 17
+          uses: actions/setup-java@v3
+          with:
+            java-version: "17"
+            distribution: "temurin"
+            cache: "maven"
+        - name: Build with Maven
+          run: >
+            ./mvnw -B
+            -Dspring.datasource.url="jdbc:mariadb://ghmariadb:3306/somedb"
+            dependency:go-offline
+            clean verify
   build:
     name: Build et test
     runs-on: ubuntu-latest
