@@ -1,59 +1,63 @@
-name: Test de tests (^^) avec Cypress
+name: Symfony 7 + Cypress E2E Tests
 
 on:
   push:
-    branches: ["main"]
-
+    branches: [main]
+  pull_request:
+    branches: [main]
 jobs:
-  build_and_test:
-    name: Build et test avec Cypress
+  Symfony-test:
     runs-on: ubuntu-latest
+    # installation des services
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
+          MYSQL_DATABASE: app
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping --silent"
+          --health-cmd="mysqladmin ping -h localhost"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
     steps:
-      - uses: actions/checkout@v4
+      # récupération du code du repository
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Installer les dépendances
+      # configuration de PHP
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, intl, pdo_mysql, sodium
+          tools: composer
+
+      # paramétrage de l'environnement de test
+      - name: Set up .env for CI
         run: |
-          composer install
-          npm install
+          cp .env .env.test
+          echo "APP_ENV=test" >> .env
+          echo "APP_ENV=test" >> .env.test
+          echo "DATABASE_URL=mysql://root:root@127.0.0.1:3306/app" >> .env.test
 
-      - name: Environnement
-        run: |
-          touch .env.dev
-          echo DATABASE_URL="mysql://root:@127.0.0.1:3306/test_db?serverVersion=8.0.32&charset=utf8mb4" >> .env.dev
-          cat .env.dev
+      # installation des dépendances Symfony
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
 
-      - name: Set up the database
-        run: |
-          until mysqladmin ping -h 127.0.0.1 --silent; do
-            echo "Waiting for MySQL to be available..."
-            sleep 1
-          done
-          php bin/console doctrine:database:create --env=test
-          php bin/console doctrine:schema:update --force --env=test
-
-      - name: Migration
+      # migration de la base de données
+      - name: migration DB
         run: |
           php bin/console d:d:c
-          php bin/console make:migration
           php bin/console d:m:m
 
-      - name: Lancer le serveur
+      # démarrage du serveur Symfony
+      - name: Run Symfony local server
         run: |
-          php -S 127.0.0.1:8000 -t public/
+          php -S 127.0.0.1:8001 -t public &
 
-      - name: Run Cypress
-        run: |
-          npm run cypress:run
+      # Cypress Actions
+      - name: Test Cypress
+        uses: cypress-io/github-action@v6
