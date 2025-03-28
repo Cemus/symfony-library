@@ -65,7 +65,7 @@ jobs:
       - name: Install JS dependencies
         run: npm install
 
-      #- name: Build frontend (si applicable)
+      #- name: Build frontend (si applicable
       #run: npm run build --if-present
 
       # démarrage du serveur Symfony
