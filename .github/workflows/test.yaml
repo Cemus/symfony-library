@@ -9,7 +9,6 @@ jobs:
     name: Build et test avec Cypress
     runs-on: ubuntu-latest
 
-    # Services
     services:
       mariadb:
         image: mariadb:latest
