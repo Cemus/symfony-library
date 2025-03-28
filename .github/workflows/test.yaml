@@ -5,6 +5,7 @@ on:
     branches: ["main"]
 
 jobs:
+
   job:
     name: Message lancé (validation du workflow)
     runs-on: ubuntu-latest
@@ -13,21 +14,24 @@ jobs:
         run: |
           echo "Workflow valide :) !"
           exit 0
-  sql-server:
+
+  build:
     name: Crée le serveur mariadb
-    build:
-      runs-on: ubuntu-latest
-      services:
-        ghmariadb:
-          image: mariadb:10.9.2-jammy
-          ports:
-            - 3306
-          env:
-            MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
-            MYSQL_USER: ${{ secrets.DB_USER }}
-            MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-            MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-          options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+    runs-on: ubuntu-latest
+    services:
+      ghmariadb:
+        image: mariadb:10.9.2-jammy
+        ports:
+          - 3306
+        env:
+          MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
+          MYSQL_USER: ${{ secrets.DB_USER }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
+
+
 
   build:
     name: Build et test
