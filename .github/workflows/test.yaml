@@ -31,14 +31,14 @@ jobs:
       - name: Environnement
         run: |
           touch .env.dev
-          echo DATABASE_URL="mysql://test:test@0.0.0.0:3306/test?-MariaDB&charset=utf8mb4" >> .env.dev
+          echo DATABASE_URL="mysql://test:test@localhost:3306/test?-MariaDB&charset=utf8mb4" >> .env.dev
           cat .env.dev
 
       - name: On attend maria
         run: |
           sudo apt-get update
           sudo apt-get install -y netcat-openbsd
-          until nc -z -v -w30 0.0.0.0 3306; do
+          until nc -z -v -w30 localhost 3306; do
             echo "Waiting for MariaDB to be ready..."
             sleep 5
           done
