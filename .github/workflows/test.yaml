@@ -29,6 +29,11 @@ jobs:
           composer install
           npm install
 
+      - name: Environnement
+        run: |
+          touch .env.dev
+          echo .env.dev >> DATABASE_URL="mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_NAME }}?-MariaDB&charset=utf8mb4"
+
       - name: Migration
         run: |
           php bin/console d:d:c
