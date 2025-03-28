@@ -43,10 +43,11 @@ jobs:
 
       - name: Attendre que MariaDB soit prêt
         run: |
-          until mysql -h mariadb -u test -p test test -e 'select 1'; do
+          until mysqladmin ping -h mariadb --silent; do
             echo "Waiting for MariaDB..."
             sleep 5
           done
+          echo "MariaDB is ready
 
       - name: Lancer le serveur
         run: |
