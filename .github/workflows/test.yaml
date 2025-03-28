@@ -20,11 +20,6 @@ jobs:
           MYSQL_DATABASE: ${{ secrets.DB_NAME }}
           MYSQL_USER: ${{ secrets.DB_USER }}
           MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        health_check:
-          interval: 10s
-          retries: 5
-          start_period: 30s
-          timeout: 10s
 
     steps:
       - uses: actions/checkout@v4
