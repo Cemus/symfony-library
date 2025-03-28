@@ -25,9 +25,9 @@ jobs:
           npm i
       - name: Migration
         run: |
-          symfony console make:database
-          symfony console make:migration
-          symfony console d:m:m
+          php bin/console make:database
+          php bin/console make:migration
+          php bin/console d:m:m
       - name: Run Cypress
         run: |
           npm run cypress:run
