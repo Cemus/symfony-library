@@ -5,43 +5,22 @@ on:
     branches: ["main"]
 
 jobs:
-  job:
-    name: Message lancé (validation du workflow)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Lance un message
-        run: |
-          echo "Workflow valide :) !"
-          exit 0
-
-  mariadb:
-    name: Crée le serveur mariadb
-    runs-on: ubuntu-latest
-    services:
-      ghmariadb:
-        image: mariadb:10.9.2-jammy
-        ports:
-          - 3306
-        env:
-          MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
-          MYSQL_USER: ${{ secrets.DB_USER }}
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: "17"
-          distribution: "temurin"
-          cache: "maven"
-      - name: Build with Maven
-        run: >
-          ./mvnw -B
-          -Dspring.datasource.url="jdbc:mariadb://ghmariadb:3306/somedb"
-          dependency:go-offline
-          clean verify
+  services:
+    mariadb:
+      image: mariadb:latest
+      options: --health-cmd='mysqladmin ping --silent' --health-start-period=30s --health-timeout=10s --health-retries=5
+      ports:
+        - 3306:3306
+      env:
+        MYSQL_ROOT_PASSWORD: secrets.DB_PASSWORD
+        MYSQL_DATABASE: secrets.DB_NAME
+        MYSQL_USER: secrets.DB_USER
+        MYSQL_PASSWORD: DB_PASSWORD
+      health_check:
+        interval: 10s
+        retries: 5
+        start_period: 30s
+        timeout: 10s
 
   build_and_test:
     name: Build et test avec Cypress
