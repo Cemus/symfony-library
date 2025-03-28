@@ -5,9 +5,20 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Lance un message
         run: echo Hello, world!
+
+  Cypress-Test:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout GitCode
+      uses: actions/checkout@v4
+
+    - name: Run Cypress Test
+      uses: cypress-io/github-action@v4
+      with:
+        command: npm run test
