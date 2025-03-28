@@ -38,7 +38,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y netcat-openbsd
-          until nc -z -v -w30 db 3306; do
+          until nc -z -v -w30 0.0.0.0 3306; do
             echo "Waiting for MariaDB to be ready..."
             sleep 5
           done
