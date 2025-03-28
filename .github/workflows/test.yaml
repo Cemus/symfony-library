@@ -33,6 +33,7 @@ jobs:
         run: |
           touch .env.dev
           echo DATABASE_URL="mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_NAME }}?-MariaDB&charset=utf8mb4" >>  .env.dev
+          echo .env.dev
 
       - name: Migration
         run: |
