@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Lance un message
-        run: echo Workflow valide :) !
+        run: |
+          echo Workflow valide :) !
+          exit 0
 
   build:
     name: Build et test
