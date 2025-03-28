@@ -35,6 +35,10 @@ jobs:
           php bin/console make:migration
           php bin/console d:m:m
 
+      - name: Lancer le serveur
+        run: |
+          php bin/console server:start
+
       - name: Run Cypress
         run: |
           npm run cypress:run
