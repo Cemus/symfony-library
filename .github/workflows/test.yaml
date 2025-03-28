@@ -45,7 +45,7 @@ jobs:
 
       - name: Logs DB
         run: |
-          docker logs db
+          docker logs 0.0.0.0
 
       - name: Migration
         run: |
