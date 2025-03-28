@@ -18,6 +18,7 @@ jobs:
           MYSQL_DATABASE: test
           MYSQL_USER: test
           MYSQL_PASSWORD: test
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v4
