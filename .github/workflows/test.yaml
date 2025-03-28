@@ -23,6 +23,11 @@ jobs:
         run: |
           composer i
           npm i
+      - name: Migration
+        run: |
+          symfony console make:database
+          symfony console make:migration
+          symfony console d:m:m
       - name: Run Cypress
         run: |
           npm run cypress:run
