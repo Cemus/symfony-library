@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 jobs:
-  job:
+  message:
     name: Message lancé (validation du workflow)
     runs-on: ubuntu-latest
     steps:
@@ -13,8 +13,13 @@ jobs:
       - name: Lance un message
         run: echo Workflow valide :) !
 
-  job-2:
-    runs-on: ubuntu-latest
+  build:
+    name: Machine php
+    uses: shivammathur/setup-php@v2
+    with:
+      php-version: "8.2.4"
+      extensions: intl, mbstring, sodium, pdo_mysql
+      tools: composer
     steps:
       - name: Choppe le repo
         uses: actions/checkout@v4
