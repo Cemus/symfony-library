@@ -31,7 +31,7 @@ jobs:
       - name: Environnement
         run: |
           touch .env.dev
-          echo DATABASE_URL="mysql://test:test@mariadb:3306/test?charset=utf8mb4" >> .env.dev
+          echo DATABASE_URL="mysql://test:test@127.0.0.1:3306/test?-MariaDB&charset=utf8mb4" >> .env.dev
           cat .env.dev
 
       - name: On attend maria
