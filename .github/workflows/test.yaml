@@ -9,18 +9,18 @@ jobs:
     name: Build et test avec Cypress
     runs-on: ubuntu-latest
     services:
-      db:
-        image: mariadb:10.3
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
         ports:
           - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: test
-          MYSQL_DATABASE: test
-          MYSQL_USER: test
-          MYSQL_PASSWORD: test
-        options: >
-          --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
     steps:
       - uses: actions/checkout@v4
 
@@ -32,17 +32,17 @@ jobs:
       - name: Environnement
         run: |
           touch .env.dev
-          echo DATABASE_URL="mysql://test:test@127.0.0.1:3306/test?" >> .env.dev
+          echo DATABASE_URL="ysql://root:@127.0.0.1:3306/test_db?serverVersion=8.0.32&charset=utf8mb4" >> .env.dev
           cat .env.dev
 
-      - name: On attend maria
+      - name: Set up the database
         run: |
-          sudo apt-get update
-          sudo apt-get install -y netcat-openbsd
-          until nc -z -v -w30 127.0.0.1 3306; do
-            echo "Waiting for MariaDB to be ready..."
-            sleep 5
+          until mysqladmin ping -h 127.0.0.1 --silent; do
+            echo "Waiting for MySQL to be available..."
+            sleep 1
           done
+          php bin/console doctrine:database:create --env=test
+          php bin/console doctrine:schema:update --force --env=test
 
       - name: Migration
         run: |
