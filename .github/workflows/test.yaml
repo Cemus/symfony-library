@@ -41,14 +41,6 @@ jobs:
           php bin/console make:migration
           php bin/console d:m:m
 
-      - name: Attendre que MariaDB soit prêt
-        run: |
-          until mysqladmin ping -h mariadb --silent; do
-            echo "Waiting for MariaDB..."
-            sleep 5
-          done
-          echo "MariaDB is ready
-
       - name: Lancer le serveur
         run: |
           php -S 0.0.0.0:8000 -t public/
