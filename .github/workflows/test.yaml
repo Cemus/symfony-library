@@ -14,17 +14,11 @@ jobs:
         run: echo Workflow valide :) !
 
   build:
-    name: Machine php
-    uses: shivammathur/setup-php@v2
-    with:
-      php-version: "8.2.4"
-      extensions: intl, mbstring, sodium, pdo_mysql
-      tools: composer
+    name: Choppe le repo
+    uses: actions/checkout@v4
     steps:
-      - name: Choppe le repo
-        uses: actions/checkout@v4
+      - name: Installer dépendances
         run: composer i
-      - name: Installer les dépendances
         run: npm i
       - name: Run Cypress
         run: npm run cypress:run
