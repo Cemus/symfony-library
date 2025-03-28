@@ -9,7 +9,7 @@ jobs:
     name: Build et test avec Cypress
     runs-on: ubuntu-latest
     services:
-      mariadb:
+      db:
         image: mariadb
         restart: always
         ports:
@@ -32,21 +32,21 @@ jobs:
       - name: Environnement
         run: |
           touch .env.dev
-          echo DATABASE_URL="mysql://test:test@mariadb:3306/test?-MariaDB&charset=utf8mb4" >> .env.dev
+          echo DATABASE_URL="mysql://test:test@db:3306/test?-MariaDB&charset=utf8mb4" >> .env.dev
           cat .env.dev
 
       - name: On attend maria
         run: |
           sudo apt-get update
           sudo apt-get install -y netcat-openbsd
-          until nc -z -v -w30 mariadb 3306; do
+          until nc -z -v -w30 db 3306; do
             echo "Waiting for MariaDB to be ready..."
             sleep 5
           done
 
-      - name: Logs mariadb
+      - name: Logs DB
         run: |
-          docker logs mariadb
+          docker logs db
 
       - name: Migration
         run: |
