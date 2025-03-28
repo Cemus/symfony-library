@@ -32,7 +32,7 @@ jobs:
       - name: Environnement
         run: |
           touch .env.dev
-          echo DATABASE_URL="mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@127.0.0.1:3306/${{ secrets.DB_NAME }}?charset=utf8mb4" > .env.dev
+          echo DATABASE_URL="mysql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@mariadb:3306/${{ secrets.DB_NAME }}?charset=utf8mb4" > .env.dev
           cat .env.dev
 
       - name: Migration
@@ -43,7 +43,7 @@ jobs:
 
       - name: Lancer le serveur
         run: |
-          php bin/console server:start
+          php -S 0.0.0.0:8000 -t public/
 
       - name: Run Cypress
         run: |
