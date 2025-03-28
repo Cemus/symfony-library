@@ -21,7 +21,6 @@ jobs:
       - name: Installer dépendances
         run: |
           composer i
-        run: |
           npm i
       - name: Run Cypress
         run: |
