@@ -18,7 +18,8 @@ jobs:
           MYSQL_DATABASE: test
           MYSQL_USER: test
           MYSQL_PASSWORD: test
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >
+          --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - uses: actions/checkout@v4
@@ -31,14 +32,14 @@ jobs:
       - name: Environnement
         run: |
           touch .env.dev
-          echo DATABASE_URL="mysql://test:test@localhost:3306/test?-MariaDB&charset=utf8mb4" >> .env.dev
+          echo DATABASE_URL="mysql://test:test@127.0.0.1:3306/test?-MariaDB&charset=utf8mb4" >> .env.dev
           cat .env.dev
 
       - name: On attend maria
         run: |
           sudo apt-get update
           sudo apt-get install -y netcat-openbsd
-          until nc -z -v -w30 localhost 3306; do
+          until nc -z -v -w30 127.0.0.1 3306; do
             echo "Waiting for MariaDB to be ready..."
             sleep 5
           done
@@ -51,7 +52,7 @@ jobs:
 
       - name: Lancer le serveur
         run: |
-          php -S 0.0.0.0:8000 -t public/
+          php -S 127.0.0.1:8000 -t public/
 
       - name: Run Cypress
         run: |
