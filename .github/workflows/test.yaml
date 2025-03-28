@@ -33,13 +33,18 @@ jobs:
           echo DATABASE_URL="mysql://test:test@mariadb:3306/test?charset=utf8mb4" >> .env.dev
           cat .env.dev
 
-      - name: Attendre le serveur SQL
+      - name: On attend maria
         run: |
-          sudo apt-get install -y netcat
+          sudo apt-get update
+          sudo apt-get install -y netcat-openbsd
           until nc -z -v -w30 mariadb 3306; do
             echo "Waiting for MariaDB to be ready..."
             sleep 5
           done
+
+      - name: Logs mariadb
+        run: |
+          docker logs mariadb
 
       - name: Migration
         run: |
