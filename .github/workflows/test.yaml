@@ -59,6 +59,7 @@ jobs:
       - name: migration DB
         run: |
           php bin/console d:d:c
+          php bin/console make:migration
           php bin/console d:m:m
 
       # installation des dépendance NodeJs
