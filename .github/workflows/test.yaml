@@ -8,8 +8,6 @@ jobs:
   build_and_test:
     name: Build et test avec Cypress
     runs-on: ubuntu-latest
-    ports:
-      - "8000:8000"
     services:
       mariadb:
         image: mariadb:latest
