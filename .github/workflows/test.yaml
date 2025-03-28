@@ -15,10 +15,14 @@ jobs:
 
   build:
     name: Choppe le repo
-    uses: actions/checkout@v4
+    runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Installer dépendances
-        run: composer i
-        run: npm i
+        run: |
+          composer i
+        run: |
+          npm i
       - name: Run Cypress
-        run: npm run cypress:run
+        run: |
+          npm run cypress:run
