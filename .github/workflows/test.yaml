@@ -1,0 +1,13 @@
+name: Test de tests (^^) avec Cypress
+
+push:
+  branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lance un message
+        run: echo Hello, world!
