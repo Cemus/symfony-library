@@ -5,8 +5,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+
 jobs:
-  Symfony-test:
+  cypress-tests:
     runs-on: ubuntu-latest
     # installation des services
     services:
@@ -22,6 +23,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+
     steps:
       # récupération du code du repository
       - name: Checkout code
@@ -34,6 +36,12 @@ jobs:
           php-version: "8.2"
           extensions: mbstring, intl, pdo_mysql, sodium
           tools: composer
+
+      # configuration de NodeJs
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
       # paramétrage de l'environnement de test
       - name: Set up .env for CI
@@ -53,22 +61,18 @@ jobs:
           php bin/console d:d:c
           php bin/console d:m:m
 
+      # installation des dépendance NodeJs
+      - name: Install JS dependencies
+        run: npm install
+
+      #- name: Build frontend (si applicable)
+      #run: npm run build --if-present
+
       # démarrage du serveur Symfony
       - name: Run Symfony local server
         run: |
           php -S 127.0.0.1:8001 -t public &
 
-      # Cypress
-      - name: Cypress-env
-        uses: cypress-io/github-action@v6
-      # after the test run completes store videos and any screenshots
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: cypress/videos
-          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+      # exécution des tests Cypress
+      - name: Run Cypress tests
+        run: npm run cypress:run
