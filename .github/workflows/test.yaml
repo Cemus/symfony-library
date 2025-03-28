@@ -5,37 +5,42 @@ on:
     branches: ["main"]
 
 jobs:
-  services:
-    mariadb:
-      image: mariadb:latest
-      options: --health-cmd='mysqladmin ping --silent' --health-start-period=30s --health-timeout=10s --health-retries=5
-      ports:
-        - 3306:3306
-      env:
-        MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-        MYSQL_USER: ${{ secrets.DB_USER }}
-        MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      health_check:
-        interval: 10s
-        retries: 5
-        start_period: 30s
-        timeout: 10s
-
   build_and_test:
     name: Build et test avec Cypress
     runs-on: ubuntu-latest
+
+    # Services
+    services:
+      mariadb:
+        image: mariadb:latest
+        options: --health-cmd='mysqladmin ping --silent' --health-start-period=30s --health-timeout=10s --health-retries=5
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+          MYSQL_USER: ${{ secrets.DB_USER }}
+          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        health_check:
+          interval: 10s
+          retries: 5
+          start_period: 30s
+          timeout: 10s
+
     steps:
       - uses: actions/checkout@v4
-      - name: Installer dépendances
+
+      - name: Installer les dépendances
         run: |
-          composer i
-          npm i
+          composer install
+          npm install
+
       - name: Migration
         run: |
           php bin/console d:d:c
           php bin/console make:migration
           php bin/console d:m:m
+
       - name: Run Cypress
         run: |
           npm run cypress:run
