@@ -43,10 +43,6 @@ jobs:
             sleep 5
           done
 
-      - name: Logs DB
-        run: |
-          docker logs 0.0.0.0
-
       - name: Migration
         run: |
           php bin/console d:d:c
