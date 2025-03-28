@@ -32,7 +32,7 @@ jobs:
       - name: Environnement
         run: |
           touch .env.dev
-          echo DATABASE_URL="ysql://root:@127.0.0.1:3306/test_db?serverVersion=8.0.32&charset=utf8mb4" >> .env.dev
+          echo DATABASE_URL="mysql://root:@127.0.0.1:3306/test_db?serverVersion=8.0.32&charset=utf8mb4" >> .env.dev
           cat .env.dev
 
       - name: Set up the database
