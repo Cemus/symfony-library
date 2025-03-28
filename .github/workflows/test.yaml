@@ -58,6 +58,17 @@ jobs:
         run: |
           php -S 127.0.0.1:8001 -t public &
 
-      # Cypress Actions
-      - name: Test Cypress
+      # Cypress
+      - name: Cypress-env
         uses: cypress-io/github-action@v6
+      # after the test run completes store videos and any screenshots
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
